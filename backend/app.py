@@ -1,3 +1,6 @@
+import os
+import threading
+
 from flask import Flask
 from flask_cors import CORS
 
@@ -7,12 +10,20 @@ from routes.clustering import clustering_bp
 from routes.association import association_bp
 from routes.predict import predict_bp, init_models
 
-import threading
-
 app = Flask(__name__)
 
-# Enable CORS for frontend
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+# Enable CORS for local and deployed frontend
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": [
+                "http://localhost:5173",
+                os.getenv("CORS_ORIGIN")
+            ]
+        }
+    }
+)
 
 
 # Root Route
